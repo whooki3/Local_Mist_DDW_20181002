@@ -1,0 +1,1 @@
+{"0": {"minAge": "34", "medAge": "38", "maxAge": "39", "f": "0.012066107", "m": "0.9879339", "ethnicity": "Black"}, "1": {"minAge": "25", "medAge": "27", "maxAge": "30", "f": "0.038440343", "m": "0.96155965", "ethnicity": "White"}}
