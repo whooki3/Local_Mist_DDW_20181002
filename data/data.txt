@@ -1,1 +1,1 @@
-{"0": {"minAge": "34", "medAge": "38", "maxAge": "39", "f": "0.012066107", "m": "0.9879339", "ethnicity": "Black"}, "1": {"minAge": "25", "medAge": "27", "maxAge": "30", "f": "0.038440343", "m": "0.96155965", "ethnicity": "White"}}
+{"0": {"Minimal_Age": "28", "Median_Age": "28.5", "Maximal_Age": "30", "Female_Ratio": "0.11757425963878632", "Male_Ratio": "0.8824256658554077", "Ethnicity": "White"}}
