@@ -1,1 +1,1 @@
-{"0": {"Minimal_Age": "28", "Median_Age": "28.5", "Maximal_Age": "30", "Female_Ratio": "0.11757425963878632", "Male_Ratio": "0.8824256658554077", "Ethnicity": "White"}}
+{"0": {"Minimal_Age": "23", "Median_Age": "23.0", "Maximal_Age": "24", "Female_Ratio": "0.036616306751966476", "Male_Ratio": "0.963383674621582", "Ethnicity": "5", "Heartrate": "88", "Body_Temperature": "36.96476531575185", "Blood_Pressure": "111", "Archetype": "7"}}
