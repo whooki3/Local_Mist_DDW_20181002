@@ -1,3 +1,5 @@
+#include <Adafruit_NeoPixel.h>
+
 /*------------------------------------------------------------------------
   Example sketch for Adafruit Thermal Printer library for Arduino.
   Demonstrates a few text styles & layouts, bitmap printing, etc.
@@ -18,6 +20,12 @@
 #include "Adafruit_Thermal.h"
 #include "cmd.h"
 #include "local_mist.h"
+//#include "utillities.h"
+
+#define STRIP_PIN 11
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(108, STRIP_PIN, NEO_GRB + NEO_KHZ800);
+
+#include "datastream.h"
 
 // Here's the new syntax when using SoftwareSerial (e.g. Arduino Uno) ----
 // If using hardware serial instead, comment out or remove these lines:
@@ -28,6 +36,11 @@
 
 SoftwareSerial mySerial(RX_PIN, TX_PIN); // Declare SoftwareSerial obj first
 Adafruit_Thermal printer(&mySerial);     // Pass addr to printer constructor
+
+
+
+
+
 // Then see setup() function regarding serial & printer begin() calls.
 
 // Here's the syntax for hardware serial (e.g. Arduino Due) --------------
@@ -59,11 +72,14 @@ void setup() {
   printer.feed(1);
 
 
+  strip.begin();
+  strip.show();
+
 }
 
 
-int    Minimal_Age, Median_Age, Maximal_Age, Ethnicity, Sexual_Preference = 0;
-float Female_Ratio, Male_Ratio = 0;
+int Minimal_Age, Median_Age, Maximal_Age, Ethnicity, Sexual_Preference, Heartrate, Body_Temparature, Blood_Pressure, Archetype = 0;
+int Female_Ratio, Male_Ratio = 0;
 
 int DDWID, weekday, day, month, year, hour, minute = 0;
 
@@ -83,20 +99,52 @@ void loop() {
   //    printer.feed(2);
   //  }
 
+  
+
 
   if (Serial.available() > 0) {
-    
+
     int incomingByte = Serial.read();
+
+    // Minimal_Age
+    // Median_Age
+    // Maximal_Age
+
+    // Female_Ratio
+
+
+    // Ethnicity
+    // Heartrate
+    // Body_Temperature
+    // Blood_Pressure
+    // Archetype
+    // hour
+    // minute
+    // day
+    // month
+    // year
+    // weekday
+
+
+
 
     Minimal_Age = Serial.parseInt();
     Median_Age = Serial.parseInt();
     Maximal_Age = Serial.parseInt();
-    Female_Ratio = Serial.parseFloat();
-    Male_Ratio = Serial.parseFloat();
-    Ethnicity = Serial.parseInt();
-    Sexual_Preference = Serial.parseInt();
 
-    DDWID = Serial.parseInt();
+    Female_Ratio = Serial.parseInt();
+    Male_Ratio = Serial.parseInt();
+
+    Ethnicity = Serial.parseInt();
+
+    Heartrate = Serial.parseInt();
+    Body_Temparature = Serial.parseInt();
+    Blood_Pressure = Serial.parseInt();
+
+    Archetype = Serial.parseFloat();
+
+
+
     weekday = Serial.parseInt();
     day = Serial.parseInt();
     month = Serial.parseInt();
@@ -108,12 +156,38 @@ void loop() {
     if (Minimal_Age > 0  && !isPrinting) {
       isPrinting = true;
 
+
+//      Serial.println(Minimal_Age );
+//      Serial.println(Median_Age );
+//      Serial.println(Maximal_Age );
+//
+//      Serial.println(Female_Ratio );
+//      Serial.println(Male_Ratio );
+//
+//      Serial.println( Ethnicity );
+//
+//      Serial.println(Heartrate );
+//      Serial.println(Body_Temparature );
+//      Serial.println(Blood_Pressure );
+//
+//      Serial.println(Archetype );
+//
+//      Serial.println(weekday );
+//      Serial.println(day );
+//      Serial.println(month );
+//      Serial.println(year );
+//      Serial.println(hour );
+//      Serial.println(minute );
+
       printer.flush();
       PrintReciept();
       printer.flush();
-      Minimal_Age, Median_Age, Maximal_Age, Ethnicity, Sexual_Preference = 0;
+
+      Minimal_Age, Median_Age, Maximal_Age, Ethnicity, Sexual_Preference, Heartrate, Body_Temparature, Blood_Pressure, Archetype = 0;
       Female_Ratio, Male_Ratio = 0;
+
       DDWID, weekday, day, month, year, hour, minute = 0;
+
     }
 
 
@@ -125,10 +199,14 @@ void loop() {
 
 void PrintReciept() {
 
+  streams = 4 ; 
+  dataAnim();
+
+   
   printer.boldOn();
   printer.setSize('S');
   printer.justify('C');
-  printer.printBitmap(Print_width, Print_height, Print_data);
+    printer.printBitmap(Print_width, Print_height, Print_data);
   printer.println(F("Thank you for your data."));
   printer.boldOff();
 
@@ -136,23 +214,24 @@ void PrintReciept() {
 
   printer.justify('L');
   printer.feed(1);
-
-  printer.print(getWeekday(weekday));
-  printer.print(" ");
-  printer.print(day);
-  printer.print(" ");
-  printer.print(getMonth(month));
-  printer.print(" ");
-  printer.print(year);
-  printer.print(" ");
-  printer.print(hour);
-  printer.print(":");
-  printer.print(minute);
-  printer.println(" ");
-  printer.feed(1);
+  //
+  //  printer.print(getWeekday(weekday));
+  //  printer.print(" ");
+  //  printer.print(day);
+  //  printer.print(" ");
+  //  printer.print(getMonth(month));
+  //  printer.print(" ");
+  //  printer.print(year);
+  //  printer.print(" ");
+  //  printer.print(hour);
+  //  printer.print(":");
+  //  printer.print(minute);
+  //  printer.println(" ");
+  //  printer.feed(1);
 
   delay(100);
-
+  streams = 3; 
+  dataAnim();
 
   printer.print(F("Minimal_Age:        "));
   printer.boldOn();
@@ -176,6 +255,9 @@ void PrintReciept() {
   printer.feed(1);
   delay(100);
 
+  streams = 2; 
+  dataAnim();
+
   printer.print(F("Female_Ratio:       "));
   printer.boldOn();
   printer.print(Female_Ratio);
@@ -191,23 +273,67 @@ void PrintReciept() {
   printer.feed(1);
   delay(100);
 
+  streams = 1; 
+  dataAnim();
+
   printer.print(F("Ethnicity:          "));
   printer.boldOn();
   printer.println(convertEth(Ethnicity));
   printer.boldOff();
 
-  printer.print(F("Sexual_Preference:  "));
+  printer.feed(1);
+  delay(100);
+
+  streams = 3; 
+  dataAnim();
+
+  printer.print(F("Heartrate:          "));
   printer.boldOn();
-  printer.println(convertSex(Sexual_Preference));
+  printer.println(Heartrate);
+  printer.boldOff();
+
+  printer.print(F("Body_Temperature:   "));
+  printer.boldOn();
+  printer.println(Body_Temparature);
+  printer.boldOff();
+
+  printer.print(F("Blood_Pressure:     "));
+  printer.boldOn();
+  printer.println(Blood_Pressure);
   printer.boldOff();
 
   printer.feed(1);
-  delay(200);
-  printer.printBitmap(cmd_width, cmd_height, CMD_LOGO);
+  delay(100);
+
+  streams = 1; 
+  dataAnim();
+
+  printer.print(F("Archetype:          "));
+  printer.boldOn();
+  printer.println(convertArch(Archetype));
+  printer.boldOff();
+
+
   printer.feed(1);
-  delay(200);
-  
-  
+
+  streams = 1; 
+  dataAnim();
+
+  //
+  //  Heartrate
+  //Body_Temperature
+  //Blood_Pressure
+  //Archetype
+
+
+
+  //  printer.feed(1);
+  //  delay(200);
+  //  printer.printBitmap(cmd_width, cmd_height, CMD_LOGO);
+  //  printer.feed(1);
+  //  delay(200);
+
+
   printer.justify('C');
   printer.println(F("https://localmist.com"));
 
@@ -216,6 +342,52 @@ void PrintReciept() {
   printer.setDefault();
 
   isPrinting = false;
+
+}
+
+String convertArch(int a) {
+
+  switch (a) {
+    case 0:
+      return "Hero";
+      break;
+    case 1:
+      return "Innocent";
+      break;
+    case 2:
+      return "Caregiver";
+      break;
+    case 3:
+      return "Creator";
+      break;
+    case 4:
+      return "Everyman";
+      break;
+    case 5:
+      return "Explorer";
+      break;
+    case 6:
+      return "Joker";
+      break;
+    case 7:
+      return "Lover";
+      break;
+    case 8:
+      return "Magician";
+      break;
+    case 9:
+      return "Rebel";
+      break;
+    case 10:
+      return "Ruler";
+      break;
+    case 11:
+      return "Sage";
+      break;
+    default:
+      return "Apache Heli";
+      break;
+  }
 
 }
 
@@ -239,10 +411,19 @@ String convertSex(int s) {
 String convertEth(int s) {
   switch (s) {
     case 0:
-      return "White";
+      return "Asian";
       break;
     case 1:
       return "Black";
+      break;
+    case 2:
+      return "Hispanic";
+      break;
+    case 3:
+      return "Indian";
+      break;
+    case 4:
+      return "White";
       break;
     default:
       return "Other";

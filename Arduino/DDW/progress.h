@@ -2,6 +2,9 @@ float percentage;
 
 int currentPixel = 0;
 
+float lastPercentage = 1;
+float percentageRead;
+
 
 void showProgress() {
 
@@ -16,21 +19,22 @@ void showProgress() {
   //    }
   //  }
 
-  //  if (percentage > 0) {
+  // Calculations
   float result = ring.numPixels() * (percentage / 100);
   int allPixels = round(result);
   float excess = result - (int)result;
-
   int brightness = (255 / 100) * percentage ;
 
-  if (percentage == 1) {
+
+ 
+  if (percentage < lastPercentage) {
     for (int i = ring.numPixels(); i >= 0; i--) {
       ring.setPixelColor(i, ring.Color(0, 0, 0));
       ring.show();
       delay(25);
     }
   }
-  else {
+ 
     for (int i = 0; i < allPixels; i++) {
 
       ring.setPixelColor(i, ring.Color(brightness, brightness, brightness));
@@ -39,10 +43,7 @@ void showProgress() {
       ring.show();
     }
 
-  }
-
-
-
+  
 
   if ( percentage >= 100 ) {
     Serial.println(0);
@@ -56,9 +57,10 @@ void showProgress() {
 
     
     dataAnim();
+    someoneIsIn = true;
   }
 
 
-  //  }
+ lastPercentage = percentage;
 
 }

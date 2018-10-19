@@ -7,13 +7,15 @@
 #define STRIP_PIN 9
 
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(300, STRIP_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(107, STRIP_PIN, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel ring = Adafruit_NeoPixel(24, RING_PIN, NEO_GRB + NEO_KHZ800);
 
 byte incomingByte;
 
 #include "datastream.h"
+#include "occupied.h"
 #include "progress.h"
+
 
 void setup() {
   // This is for Trinket 5V 16MHz, you can remove these three lines if you are not using a Trinket
@@ -39,17 +41,59 @@ void loop() {
     // read the incoming byte:
     incomingByte = Serial.read();
 
-    if (incomingByte == 'x') {
-      for (int i = 0; i < 1; i++) {
+    if (incomingByte == 't') {
         dataAnim();
+    }
+
+    if (incomingByte == 'i') {
+        someoneIsIn = true;
+    }
+
+    if (incomingByte == 'o') {
+
+        for (int i = ring.numPixels(); i >= 0; i--) {
+          ring.setPixelColor(i, ring.Color(0, 0, 0));    
+        ring.show();
+        delay(20);
       }
+      
+        someoneIsIn = false;
     }
 
     // ZET EEN LETTER P VOOR DE PERCENTAGE
-    percentage = Serial.parseFloat();
+    percentage = 
+
+    percentageRead = Serial.parseFloat();
+
+    if(percentageRead == 0){
+      percentage = lastPercentage;
+    } else {
+      
+
+    if(someoneIsIn){
+      for (int i = ring.numPixels(); i >= 0; i--) {
+          ring.setPixelColor(i, ring.Color(0, 0, 0));    
+        ring.show();
+        delay(20);
+      }
+
+      someoneIsIn = false;
+    }
+      
+      percentage = percentageRead;
+    }
+    
   }
 
-  showProgress();
+  //Serial.println(percentage);
+
+  if( someoneIsIn ) {
+    blockAnim();
+  }
+  else {
+    showProgress();
+  }
+  
 
 }
 
